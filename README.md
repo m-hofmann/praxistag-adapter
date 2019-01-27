@@ -14,10 +14,9 @@ in its working directory. It should look like this:
     "ElasticUser": "...",
     "ElasticPassword": "...",
     "ElasticHost": "example.org",
-    "ElasticContextRoute": "some/route/or/empty"
+    "ElasticContextRoute": "some/route/or/empty",
     "PubSubCertificate": "file.pem"
 }
-
 ```
 
 ## Dependencies
