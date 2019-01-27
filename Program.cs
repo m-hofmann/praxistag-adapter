@@ -9,12 +9,12 @@ namespace adapter
     {
         private String projectId = "praxistag-229219";
 
-        static void Main(string[] args)
+        static async void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
 
             var pubSubEsImporter = new PubSubElasticImporter();
-            pubSubEsImporter.Run();
+            await pubSubEsImporter.Run();
         }
     }
 }

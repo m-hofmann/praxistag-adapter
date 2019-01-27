@@ -18,15 +18,22 @@ namespace adapter
 
         internal async void Run()
         {
-            var subscriptionName = new SubscriptionName(projectId, subscriptionId);
-            var subscriber = await SubscriberClient.CreateAsync(subscriptionName);
-            await subscriber.StartAsync(
-                async (PubsubMessage message, CancellationToken CancellationToken) =>
-                {
-                    Console.Out.WriteLine(message.Data.ToStringUtf8());
-                    return SubscriberClient.Reply.Ack;
-                }
-            );
+            try
+            {
+                var subscriptionName = new SubscriptionName(projectId, subscriptionId);
+                var subscriber = await SubscriberClient.CreateAsync(subscriptionName);
+                await subscriber.StartAsync(
+                    async (PubsubMessage message, CancellationToken CancellationToken) =>
+                    {
+                        Console.Out.WriteLine(message.Data.ToStringUtf8());
+                        return SubscriberClient.Reply.Ack;
+                    }
+                );
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error {e}");
+            }
         }
     }
 }
