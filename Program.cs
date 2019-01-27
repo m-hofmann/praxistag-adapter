@@ -1,20 +1,29 @@
 ﻿using System;
+using System.IO;
+using adapter.Configuration;
 using Google.Cloud.PubSub.V1;
+using Newtonsoft.Json;
 
 namespace adapter
 {
-
-
     class Program
     {
-        private String projectId = "praxistag-229219";
-
-        static async void Main(string[] args)
+        static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            ApplicationConfiguration config;
+
+            using (StreamReader reader = File.OpenText("config.json"))
+            {
+                var serializer = new JsonSerializer();
+                config = (ApplicationConfiguration) serializer.Deserialize(reader, typeof(ApplicationConfiguration));
+            }
+
+            Console.WriteLine("PubSub <-> ElasticSearch Adapter");
+            Console.WriteLine(string.Empty);
+            Console.WriteLine($"config.json: {config}");
 
             var pubSubEsImporter = new PubSubElasticImporter();
-            await pubSubEsImporter.Run();
+            pubSubEsImporter.Run();
         }
     }
 }
