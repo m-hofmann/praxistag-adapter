@@ -35,6 +35,13 @@ namespace adapter.Configuration
         [JsonProperty(Required = Required.Always)]
         public string ElasticContextRoute { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Network port that ElasticSearch is listening on.
+        /// </summary>
+        /// <value>A port, for example 80 or 443</value>
+        [JsonProperty(Required = Required.Always)]
+        public uint ElasticPort { get; internal set; }
+
         #endregion
 
         #region Google Cloud PubSub configuration
@@ -48,8 +55,9 @@ namespace adapter.Configuration
 
         public override string ToString()
         {
-            return $"ElasticUser: {ElasticUser}, ElasticPassword: {!string.IsNullOrEmpty(ElasticPassword)},"
-            + $"ElasticHost: {ElasticHost}, ElasticContextRoute: {ElasticContextRoute}, CertificateFile: {CertificateFile}";
+            return $"ElasticUser: {ElasticUser}, ElasticPassword: {!string.IsNullOrEmpty(ElasticPassword)}, "
+            + $"ElasticHost: {ElasticHost}, ElasticPort: {ElasticPort}, "
+            + $"ElasticContextRoute: {ElasticContextRoute}, CertificateFile: {CertificateFile}";
         }
 
         #endregion

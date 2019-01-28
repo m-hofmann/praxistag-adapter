@@ -23,6 +23,8 @@ namespace adapter
             Console.WriteLine($"config.json: {config}");
 
             var pubSubEsImporter = new PubSubElasticImporter();
+            var temperatureWriter = new ElasticSearchTemperatureWriter(config);
+            temperatureWriter.Write(new Measurement());
             pubSubEsImporter.Run();
         }
     }
