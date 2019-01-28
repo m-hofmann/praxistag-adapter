@@ -24,7 +24,7 @@ namespace adapter
         /// </summary>
         /// <value>Datetime object</value>
         [JsonProperty("time_stamp")]
-        public DateTime TimeStamp { get; set; }
+        public DateTime TimeStamp { get; set; } = DateTime.Now;
 
         /// <summary>
         /// Temperature measurement in degree celsius

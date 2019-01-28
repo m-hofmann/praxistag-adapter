@@ -24,6 +24,7 @@ namespace adapter
 
             var pubSubEsImporter = new PubSubElasticImporter();
             var temperatureWriter = new ElasticSearchTemperatureWriter(config);
+            temperatureWriter.Initialize();
             temperatureWriter.Write(new Measurement());
             pubSubEsImporter.Run();
         }

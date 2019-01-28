@@ -18,8 +18,9 @@ namespace adapter
         public void Initialize()
         {
             var settings = new ConnectionSettings(new Uri($"http://{config.ElasticHost}:{config.ElasticPort}/{config.ElasticContextRoute}"))
+                                .BasicAuthentication(config.ElasticUser, config.ElasticPassword)
                                 .DefaultIndex("dev");
-            var client = new ElasticClient(settings);
+            client = new ElasticClient(settings);
         }
 
         public void Write(Measurement measurement)
@@ -27,7 +28,7 @@ namespace adapter
             var indexResponse = client.IndexDocument(measurement);
             if (!indexResponse.IsValid)
             {
-                Console.Error.WriteLine($"Failed to index document: {indexResponse}");
+                Console.Error.WriteLine($"Failed to index document: {indexResponse.DebugInformation}");
             }
         }
     }
