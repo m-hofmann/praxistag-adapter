@@ -6,6 +6,13 @@ namespace adapter
     public class Measurement
     {
         /// <summary>
+        /// A random id for use in ElasticSearch. This property is initialized
+        /// with a new random GUID upon creation of a Measurement object.
+        /// </summary>
+        /// <returns>A randomly initialized GUID</returns>
+        public Guid Id { get; set; } = Guid.NewGuid();
+
+        /// <summary>
         /// ID of the device that sent the measurement
         /// </summary>
         /// <value>A device name as string</value>
