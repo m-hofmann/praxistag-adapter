@@ -6,7 +6,7 @@ Best to be used with Visual Studio Code!
 
 ## Configuration
 
-The program reads configuration from the file `config.json`which it expects
+The program reads configuration from the file `config.json` which it expects
 in its working directory. It should look like this:
 
 ```json
@@ -14,6 +14,7 @@ in its working directory. It should look like this:
     "ElasticUser": "...",
     "ElasticPassword": "...",
     "ElasticHost": "example.org",
+    "ElasticPort": 80,
     "ElasticContextRoute": "some/route/or/empty",
     "PubSubCertificate": "file.pem"
 }
