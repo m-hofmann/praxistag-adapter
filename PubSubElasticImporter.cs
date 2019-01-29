@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using adapter.Configuration;
@@ -32,10 +33,12 @@ namespace adapter
             var subscriptionName = new SubscriptionName(projectId, subscriptionId);
             var subscriber = await SubscriberClient.CreateAsync(subscriptionName);
 
-            subscriber.StartAsync(
+            await subscriber.StartAsync(
                 async (PubsubMessage message, CancellationToken CancellationToken) =>
                 {
-                    Console.Out.WriteLine(message.Data.ToStringUtf8());
+                    var measurement = JsonConvert.DeserializeObject<Measurement>(message.Data.ToString());
+                    Console.WriteLine($"measurement: {measurement}");
+                    measurementConsumer(measurement);
                     return SubscriberClient.Reply.Ack;
                 }
             );
