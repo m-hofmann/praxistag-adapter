@@ -22,11 +22,10 @@ namespace adapter
             Console.WriteLine(string.Empty);
             Console.WriteLine($"config.json: {config}");
 
-            var pubSubEsImporter = new PubSubElasticImporter();
+            var pubSubEsImporter = new PubSubElasticImporter(config);
             var temperatureWriter = new ElasticSearchTemperatureWriter(config);
             temperatureWriter.Initialize();
-            temperatureWriter.Write(new Measurement());
-            pubSubEsImporter.Run();
+            pubSubEsImporter.Run(m => temperatureWriter.Write(m)).Wait();
         }
     }
 }
