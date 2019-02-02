@@ -49,6 +49,13 @@ namespace adapter.Configuration
         [JsonProperty(Required = Required.Always)]
         public string CertificateFile { get; set; } = string.Empty;
 
+
+        [JsonProperty(Required = Required.Always)]
+        public string ProjectId { get; set; } = string.Empty;
+
+        [JsonProperty(Required = Required.Always)]
+        public string subscriptionId { get; set; } = string.Empty;
+
         #endregion
 
         #region Helper methods

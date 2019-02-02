@@ -11,15 +11,9 @@ namespace adapter
     internal class PubSubElasticImporter
     {
 
-        // FIXME from application config
-        private string projectId = "praxistag-229219";
-
-        // FIXME from application config
-        private string subscriptionId = "dev-sub";
-
         private JsonSerializer serializer;
 
-        private ApplicationConfiguration Config { get; set; }
+        private ApplicationConfiguration Config { get; }
 
         public PubSubElasticImporter(ApplicationConfiguration config)
         {
@@ -30,7 +24,7 @@ namespace adapter
 
         internal async Task Run(Action<Measurement> measurementConsumer)
         {
-            var subscriptionName = new SubscriptionName(projectId, subscriptionId);
+            var subscriptionName = new SubscriptionName(Config.ProjectId, Config.subscriptionId);
             var subscriber = await SubscriberClient.CreateAsync(subscriptionName);
 
             await subscriber.StartAsync(
