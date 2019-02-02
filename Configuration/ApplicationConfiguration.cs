@@ -47,7 +47,7 @@ namespace adapter.Configuration
         #region Google Cloud PubSub configuration
 
         [JsonProperty(Required = Required.Always)]
-        public string CertificateFile { get; set; } = string.Empty;
+        public string CredentialsFile { get; set; } = string.Empty;
 
 
         [JsonProperty(Required = Required.Always)]
@@ -64,7 +64,7 @@ namespace adapter.Configuration
         {
             return $"ElasticUser: {ElasticUser}, ElasticPassword: {!string.IsNullOrEmpty(ElasticPassword)}, "
             + $"ElasticHost: {ElasticHost}, ElasticPort: {ElasticPort}, "
-            + $"ElasticContextRoute: {ElasticContextRoute}, CertificateFile: {CertificateFile}";
+            + $"ElasticContextRoute: {ElasticContextRoute}, CredentialsFile: {CredentialsFile}";
         }
 
         #endregion

@@ -3,7 +3,10 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using adapter.Configuration;
+using Google.Apis.Auth.OAuth2;
 using Google.Cloud.PubSub.V1;
+using Grpc.Auth;
+using Grpc.Core;
 using Newtonsoft.Json;
 
 namespace adapter
@@ -24,13 +27,20 @@ namespace adapter
 
         internal async Task Run(Action<Measurement> measurementConsumer)
         {
+            GoogleCredential googleCredential = null;
+            using (var jsonStream = new FileStream(Config.CredentialsFile, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                googleCredential = GoogleCredential.FromStream(jsonStream);
+            }
+            ChannelCredentials channelCredentials = googleCredential.ToChannelCredentials();
+
             var subscriptionName = new SubscriptionName(Config.ProjectId, Config.subscriptionId);
-            var subscriber = await SubscriberClient.CreateAsync(subscriptionName);
+            var subscriber = await SubscriberClient.CreateAsync(subscriptionName, new SubscriberClient.ClientCreationSettings(credentials: channelCredentials));
 
             await subscriber.StartAsync(
                 async (PubsubMessage message, CancellationToken CancellationToken) =>
                 {
-                    var measurement = JsonConvert.DeserializeObject<Measurement>(message.Data.ToString());
+                    Console.WriteLine($"Got raw data {message.Data.ToStringUtf8()}");
+                    var measurement = JsonConvert.DeserializeObject<Measurement>(message.Data.ToStringUtf8());
                     Console.WriteLine($"measurement: {measurement}");
                     measurementConsumer(measurement);
                     return SubscriberClient.Reply.Ack;

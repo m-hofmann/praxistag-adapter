@@ -14,7 +14,7 @@ in its working directory. It should look like this:
     "ElasticHost": "example.org",
     "ElasticPort": 80,
     "ElasticContextRoute": "some/route/or/empty",
-    "PubSubCertificate": "file.pem",
+    "CredentialsFile": "gcloud-credentials.json",
     "ProjectId": "...",
     "SubscriptionId": "..."
 }
