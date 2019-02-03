@@ -25,3 +25,19 @@ in its working directory. It should look like this:
 - Google.Cloud.PubSub.V1 for subscribing to events on gcloud's PubSub
 - NEST as ElasticSearch client
 - Newtonsoft.Json for, you know, JSON
+
+## PubSub Message Object
+
+Each temperature measurement received from PubSub should look like this: 
+
+```json
+{
+    "device_id": "sensor-42",
+    "time_stamp": 1549123452,
+    "temperature": -5.4,
+    "humidity": 20.3
+}
+```
+
+Before sending it to ElasticSearch, an `_id` field with a randomly generated
+GUID is added to serve as document key.
