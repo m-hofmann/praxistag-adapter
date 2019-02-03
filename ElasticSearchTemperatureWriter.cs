@@ -1,25 +1,28 @@
 using System;
 using adapter.Configuration;
+using Microsoft.Extensions.Logging;
 using Nest;
 
 namespace adapter
 {
     internal class ElasticSearchTemperatureWriter
     {
-        private ApplicationConfiguration config;
+        private readonly ApplicationConfiguration config;
+        
+        private readonly ILogger logger;
 
         private ElasticClient client;
 
-        public ElasticSearchTemperatureWriter(ApplicationConfiguration config)
+        public ElasticSearchTemperatureWriter(ApplicationConfiguration config, ILogger logger)
         {
             this.config = config;
+            this.logger = logger;
         }
 
         public void Initialize()
         {
             var settings = new ConnectionSettings(new Uri($"http://{config.ElasticHost}:{config.ElasticPort}/{config.ElasticContextRoute}"))
                                 .BasicAuthentication(config.ElasticUser, config.ElasticPassword)
-                                .EnableTcpKeepAlive(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1))
                                 .DefaultIndex("dev");
             client = new ElasticClient(settings);
         }
@@ -36,7 +39,7 @@ namespace adapter
 
             if (!response.IsValid)
             {
-                Console.Error.WriteLine($"Failed to index document: {response.DebugInformation}");
+                logger.LogError($"Failed to index document: {response.DebugInformation}");
             }
         }
     }

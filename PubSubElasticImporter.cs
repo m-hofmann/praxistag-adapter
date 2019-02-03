@@ -7,6 +7,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Cloud.PubSub.V1;
 using Grpc.Auth;
 using Grpc.Core;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace adapter
@@ -14,27 +15,30 @@ namespace adapter
     internal class PubSubElasticImporter
     {
 
-        private JsonSerializer serializer;
+        private readonly JsonSerializer serializer;
 
-        private ApplicationConfiguration Config { get; }
+        private readonly ILogger logger;
 
-        public PubSubElasticImporter(ApplicationConfiguration config)
+        private readonly ApplicationConfiguration config;
+
+        public PubSubElasticImporter(ApplicationConfiguration config, Microsoft.Extensions.Logging.ILogger logger)
         {
-            Config = config;
+            this.config = config;
+            this.logger = logger;
 
-            serializer = new JsonSerializer();
+            this.serializer = new JsonSerializer();
         }
 
         internal async Task Run(Action<Measurement> measurementConsumer)
         {
             GoogleCredential googleCredential = null;
-            using (var jsonStream = new FileStream(Config.CredentialsFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var jsonStream = new FileStream(config.CredentialsFile, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 googleCredential = GoogleCredential.FromStream(jsonStream);
             }
             ChannelCredentials channelCredentials = googleCredential.ToChannelCredentials();
 
-            var subscriptionName = new SubscriptionName(Config.ProjectId, Config.subscriptionId);
+            var subscriptionName = new SubscriptionName(config.ProjectId, config.subscriptionId);
             var subscriber = await SubscriberClient.CreateAsync(subscriptionName, new SubscriberClient.ClientCreationSettings(credentials: channelCredentials));
 
             await subscriber.StartAsync(
@@ -43,13 +47,13 @@ namespace adapter
                     try
                     {
                         var measurement = JsonConvert.DeserializeObject<Measurement>(message.Data.ToStringUtf8());
-                        Console.WriteLine($"measurement: {measurement}");
+                        logger.LogInformation($"measurement: {measurement}");
                         measurementConsumer(measurement);
                     }
                     catch (Exception e)
                     {
                         // ignore invalid messages and ack them anyway -> avoids busy loop
-                        Console.Error.WriteLine($"Failed to parse {e}");
+                        logger.LogError("Failed to parse event", e);
                     }
                     return SubscriberClient.Reply.Ack;
                 }

@@ -2,6 +2,7 @@
 using System.IO;
 using adapter.Configuration;
 using Google.Cloud.PubSub.V1;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace adapter
@@ -18,12 +19,15 @@ namespace adapter
                 config = (ApplicationConfiguration) serializer.Deserialize(reader, typeof(ApplicationConfiguration));
             }
 
-            Console.WriteLine("PubSub <-> ElasticSearch Adapter");
-            Console.WriteLine(string.Empty);
-            Console.WriteLine($"config.json: {config}");
+            var loggerFactory = new LoggerFactory().AddConsole();
+            var mainLogger = loggerFactory.CreateLogger(nameof(Program));
 
-            var pubSubEsImporter = new PubSubElasticImporter(config);
-            var temperatureWriter = new ElasticSearchTemperatureWriter(config);
+            mainLogger.LogInformation("PubSub <-> ElasticSearch Adapter");
+            mainLogger.LogInformation(string.Empty);
+            mainLogger.LogInformation($"config.json: {config}");
+
+            var pubSubEsImporter = new PubSubElasticImporter(config, loggerFactory.CreateLogger(nameof(PubSubElasticImporter)));
+            var temperatureWriter = new ElasticSearchTemperatureWriter(config, loggerFactory.CreateLogger(nameof(ElasticSearchTemperatureWriter)));
             temperatureWriter.Initialize();
             pubSubEsImporter.Run(m => temperatureWriter.Write(m)).Wait();
         }
