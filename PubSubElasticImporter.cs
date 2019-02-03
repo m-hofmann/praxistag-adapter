@@ -28,7 +28,8 @@ namespace adapter
         internal async Task Run(Action<Measurement> measurementConsumer)
         {
             GoogleCredential googleCredential = null;
-            using (var jsonStream = new FileStream(Config.CredentialsFile, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+            using (var jsonStream = new FileStream(Config.CredentialsFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
                 googleCredential = GoogleCredential.FromStream(jsonStream);
             }
             ChannelCredentials channelCredentials = googleCredential.ToChannelCredentials();
@@ -39,10 +40,17 @@ namespace adapter
             await subscriber.StartAsync(
                 async (PubsubMessage message, CancellationToken CancellationToken) =>
                 {
-                    Console.WriteLine($"Got raw data {message.Data.ToStringUtf8()}");
-                    var measurement = JsonConvert.DeserializeObject<Measurement>(message.Data.ToStringUtf8());
-                    Console.WriteLine($"measurement: {measurement}");
-                    measurementConsumer(measurement);
+                    try
+                    {
+                        var measurement = JsonConvert.DeserializeObject<Measurement>(message.Data.ToStringUtf8());
+                        Console.WriteLine($"measurement: {measurement}");
+                        measurementConsumer(measurement);
+                    }
+                    catch (Exception e)
+                    {
+                        // ignore invalid messages and ack them anyway -> avoids busy loop
+                        Console.Error.WriteLine($"Failed to parse {e}");
+                    }
                     return SubscriberClient.Reply.Ack;
                 }
             );
