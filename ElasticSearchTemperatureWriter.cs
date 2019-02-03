@@ -19,16 +19,24 @@ namespace adapter
         {
             var settings = new ConnectionSettings(new Uri($"http://{config.ElasticHost}:{config.ElasticPort}/{config.ElasticContextRoute}"))
                                 .BasicAuthentication(config.ElasticUser, config.ElasticPassword)
+                                .EnableTcpKeepAlive(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1))
                                 .DefaultIndex("dev");
             client = new ElasticClient(settings);
         }
 
         public void Write(Measurement measurement)
         {
-            var indexResponse = client.IndexDocument(measurement);
-            if (!indexResponse.IsValid)
+            var retryCount = 0;
+            IIndexResponse response;
+            do 
             {
-                Console.Error.WriteLine($"Failed to index document: {indexResponse.DebugInformation}");
+                response = client.IndexDocument(measurement);
+                retryCount++;
+            } while (!response.IsValid && retryCount <= 3);
+
+            if (!response.IsValid)
+            {
+                Console.Error.WriteLine($"Failed to index document: {response.DebugInformation}");
             }
         }
     }
