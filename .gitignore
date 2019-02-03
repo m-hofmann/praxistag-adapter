@@ -1,5 +1,8 @@
 # project specific files
+## project specific config
 config.json
+## gcloud credentials file
+praxistag-*.json
 
 # generic files
 
