@@ -23,7 +23,7 @@ namespace adapter
         {
             var settings = new ConnectionSettings(new Uri($"http://{config.ElasticHost}:{config.ElasticPort}/{config.ElasticContextRoute}"))
                                 .BasicAuthentication(config.ElasticUser, config.ElasticPassword)
-                                .DefaultIndex("dev");
+                                .DefaultIndex(config.IndexName);
             client = new ElasticClient(settings);
         }
 

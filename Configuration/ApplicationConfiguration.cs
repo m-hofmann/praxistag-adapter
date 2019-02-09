@@ -40,7 +40,14 @@ namespace adapter.Configuration
         /// </summary>
         /// <value>A port, for example 80 or 443</value>
         [JsonProperty(Required = Required.Always)]
-        public uint ElasticPort { get; internal set; }
+        public uint ElasticPort { get; set; }
+
+        /// <summary>
+        /// Name of the ElasticSearch index.
+        /// </summary>
+        /// <value>string of a valid index name, for example myindex_20190205</value>
+        [JsonProperty(Required = Required.Always)]
+        public string IndexName { get; set; }
 
         #endregion
 
@@ -54,7 +61,7 @@ namespace adapter.Configuration
         public string ProjectId { get; set; } = string.Empty;
 
         [JsonProperty(Required = Required.Always)]
-        public string subscriptionId { get; set; } = string.Empty;
+        public string SubscriptionId { get; set; } = string.Empty;
 
         #endregion
 
@@ -63,8 +70,9 @@ namespace adapter.Configuration
         public override string ToString()
         {
             return $"ElasticUser: {ElasticUser}, ElasticPassword: {!string.IsNullOrEmpty(ElasticPassword)}, "
-            + $"ElasticHost: {ElasticHost}, ElasticPort: {ElasticPort}, "
-            + $"ElasticContextRoute: {ElasticContextRoute}, CredentialsFile: {CredentialsFile}";
+            + $"ElasticHost: {ElasticHost}, ElasticPort: {ElasticPort}, IndexName: {IndexName},"
+            + $"ElasticContextRoute: {ElasticContextRoute}, CredentialsFile: {CredentialsFile}"
+            + $"SubscriptionId: {SubscriptionId}";
         }
 
         #endregion

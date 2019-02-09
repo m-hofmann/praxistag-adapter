@@ -26,7 +26,7 @@ namespace adapter
             mainLogger.LogInformation(string.Empty);
             mainLogger.LogInformation($"config.json: {config}");
 
-            var pubSubEsImporter = new PubSubElasticImporter(config, loggerFactory.CreateLogger(nameof(PubSubElasticImporter)));
+            var pubSubEsImporter = new PubSubClient(config, loggerFactory.CreateLogger(nameof(PubSubClient)));
             var temperatureWriter = new ElasticSearchTemperatureWriter(config, loggerFactory.CreateLogger(nameof(ElasticSearchTemperatureWriter)));
             temperatureWriter.Initialize();
             pubSubEsImporter.Run(m => temperatureWriter.Write(m)).Wait();

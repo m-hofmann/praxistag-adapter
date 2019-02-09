@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace adapter
 {
-    internal class PubSubElasticImporter
+    internal class PubSubClient
     {
 
         private readonly JsonSerializer serializer;
@@ -21,7 +21,7 @@ namespace adapter
 
         private readonly ApplicationConfiguration config;
 
-        public PubSubElasticImporter(ApplicationConfiguration config, Microsoft.Extensions.Logging.ILogger logger)
+        public PubSubClient(ApplicationConfiguration config, Microsoft.Extensions.Logging.ILogger logger)
         {
             this.config = config;
             this.logger = logger;
@@ -38,7 +38,7 @@ namespace adapter
             }
             ChannelCredentials channelCredentials = googleCredential.ToChannelCredentials();
 
-            var subscriptionName = new SubscriptionName(config.ProjectId, config.subscriptionId);
+            var subscriptionName = new SubscriptionName(config.ProjectId, config.SubscriptionId);
             var subscriber = await SubscriberClient.CreateAsync(subscriptionName, new SubscriberClient.ClientCreationSettings(credentials: channelCredentials));
 
             await subscriber.StartAsync(
