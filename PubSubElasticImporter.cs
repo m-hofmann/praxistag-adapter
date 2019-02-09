@@ -31,16 +31,8 @@ namespace adapter
 
         internal async Task Run(Action<Measurement> measurementConsumer)
         {
-            GoogleCredential googleCredential = null;
-            using (var jsonStream = new FileStream(config.CredentialsFile, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                googleCredential = GoogleCredential.FromStream(jsonStream);
-            }
-            ChannelCredentials channelCredentials = googleCredential.ToChannelCredentials();
-
-            var subscriptionName = new SubscriptionName(config.ProjectId, config.SubscriptionId);
-            var subscriber = await SubscriberClient.CreateAsync(subscriptionName, new SubscriberClient.ClientCreationSettings(credentials: channelCredentials));
-
+            var subscriber = await InitializeClient();
+           
             await subscriber.StartAsync(
                 async (PubsubMessage message, CancellationToken CancellationToken) =>
                 {
@@ -58,6 +50,18 @@ namespace adapter
                     return SubscriberClient.Reply.Ack;
                 }
             );
+        }
+
+        private async Task<SubscriberClient> InitializeClient() {
+            GoogleCredential googleCredential = null;
+            using (var jsonStream = new FileStream(config.CredentialsFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                googleCredential = GoogleCredential.FromStream(jsonStream);
+            }
+            ChannelCredentials channelCredentials = googleCredential.ToChannelCredentials();
+
+            var subscriptionName = new SubscriptionName(config.ProjectId, config.SubscriptionId);
+            return await SubscriberClient.CreateAsync(subscriptionName, new SubscriberClient.ClientCreationSettings(credentials: channelCredentials));
         }
     }
 }
