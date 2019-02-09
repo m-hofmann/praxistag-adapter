@@ -21,6 +21,7 @@ namespace adapter
 
         public void Initialize()
         {
+            // TODO create settings and new client
             var settings = new ConnectionSettings(new Uri($"http://{config.ElasticHost}:{config.ElasticPort}/{config.ElasticContextRoute}"))
                                 .BasicAuthentication(config.ElasticUser, config.ElasticPassword)
                                 .DefaultIndex(config.IndexName);
@@ -29,6 +30,7 @@ namespace adapter
 
         public void Write(Measurement measurement)
         {
+            // TODO upload the measurement into the index
             IIndexResponse response = client.IndexDocument(measurement);
 
             if (!response.IsValid)
