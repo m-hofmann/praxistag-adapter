@@ -29,13 +29,7 @@ namespace adapter
 
         public void Write(Measurement measurement)
         {
-            var retryCount = 0;
-            IIndexResponse response;
-            do 
-            {
-                response = client.IndexDocument(measurement);
-                retryCount++;
-            } while (!response.IsValid && retryCount <= 3);
+            IIndexResponse response = client.IndexDocument(measurement);
 
             if (!response.IsValid)
             {
