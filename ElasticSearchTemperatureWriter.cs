@@ -22,21 +22,14 @@ namespace adapter
         public void Initialize()
         {
             // TODO create settings and new client
-            var settings = new ConnectionSettings(new Uri($"http://{config.ElasticHost}:{config.ElasticPort}/{config.ElasticContextRoute}"))
-                                .BasicAuthentication(config.ElasticUser, config.ElasticPassword)
-                                .DefaultIndex(config.IndexName);
-            client = new ElasticClient(settings);
+            
         }
 
         public void Write(Measurement measurement)
         {
             // TODO upload the measurement into the index
-            IIndexResponse response = client.IndexDocument(measurement);
-
-            if (!response.IsValid)
-            {
-                logger.LogError($"Failed to index document: {response.DebugInformation}");
-            }
+            
+            logger.LogInformation($"Should upload {measurement} but doing nothing");
         }
     }
 }
