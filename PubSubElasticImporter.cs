@@ -36,22 +36,31 @@ namespace adapter
             await subscriber.StartAsync(
                 async (PubsubMessage message, CancellationToken CancellationToken) =>
                 {
-                    try
+                    if (IsMessageFromMyDevice(message))
                     {
-                        var measurement = JsonConvert.DeserializeObject<Measurement>(message.Data.ToStringUtf8());
-                        logger.LogInformation($"measurement: {measurement}");
-                        measurementConsumer(measurement);
+                        try
+                        {
+                            var measurement = JsonConvert.DeserializeObject<Measurement>(message.Data.ToStringUtf8());
+                            logger.LogInformation($"measurement: {measurement}");
+                            measurementConsumer(measurement);
+                        }
+                        catch (Exception e)
+                        {
+                            // ignore invalid messages and ack them anyway -> avoids busy loop
+                            logger.LogError("Failed to parse event", e);
+                        }
                     }
-                    catch (Exception e)
-                    {
-                        // ignore invalid messages and ack them anyway -> avoids busy loop
-                        logger.LogError("Failed to parse event", e);
-                    }
+                    // ack all messages so they do not occur again 
                     return SubscriberClient.Reply.Ack;
                 }
             );
         }
 
+        /// <summary>
+        /// Initialize a new pubsub subscriber client with the provided credentials and
+        /// the subscription id read from the global app configuration.
+        /// </summary>
+        /// <returns>an initialized subscriberclient</returns>
         private async Task<SubscriberClient> InitializeClient() {
             GoogleCredential googleCredential = null;
             using (var jsonStream = new FileStream(config.CredentialsFile, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -62,6 +71,17 @@ namespace adapter
 
             var subscriptionName = new SubscriptionName(config.ProjectId, config.SubscriptionId);
             return await SubscriberClient.CreateAsync(subscriptionName, new SubscriberClient.ClientCreationSettings(credentials: channelCredentials));
+        }
+
+        /// <summary>
+        /// Determine whether a message is from the device configured for this application instance.
+        /// </summary>
+        /// <param name="message"> a pubsub message</param>
+        /// <returns>true if this device is to be handled by this application</returns>
+        private bool IsMessageFromMyDevice(PubsubMessage message) 
+        {
+            var messageDeviceName = message.Attributes["deviceId"] as string;
+            return config.DeviceName.Equals(messageDeviceName, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }

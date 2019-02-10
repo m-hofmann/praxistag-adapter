@@ -23,7 +23,8 @@ in its working directory. It should look like this:
     "IndexName": "some_name",
     "CredentialsFile": "gcloud-credentials.json",
     "ProjectId": "...",
-    "SubscriptionId": "..."
+    "SubscriptionId": "...",
+    "DeviceName": "groupname-device"
 }
 ```
 

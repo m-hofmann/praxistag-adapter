@@ -63,6 +63,13 @@ namespace adapter.Configuration
         [JsonProperty(Required = Required.Always)]
         public string SubscriptionId { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Device name to filter messages and retrieve only those from our device.
+        /// </summary>
+        /// <returns>a device name as string</returns>
+        [JsonProperty(Required = Required.Always)]
+        public string DeviceName { get; set; } = string.Empty;
+
         #endregion
 
         #region Helper methods
@@ -72,7 +79,7 @@ namespace adapter.Configuration
             return $"ElasticUser: {ElasticUser}, ElasticPassword: {!string.IsNullOrEmpty(ElasticPassword)}, "
             + $"ElasticHost: {ElasticHost}, ElasticPort: {ElasticPort}, IndexName: {IndexName},"
             + $"ElasticContextRoute: {ElasticContextRoute}, CredentialsFile: {CredentialsFile}"
-            + $"SubscriptionId: {SubscriptionId}";
+            + $"SubscriptionId: {SubscriptionId}, DeviceName: {DeviceName}";
         }
 
         #endregion
