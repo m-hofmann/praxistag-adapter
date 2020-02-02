@@ -50,3 +50,46 @@ Each temperature measurement received from PubSub should look like this:
 
 Before sending it to ElasticSearch, an `_id` field with a randomly generated
 GUID is added to serve as document key.
+
+## ElasticSearch Index Mapping>
+
+The following [index mapping](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/indices-put-mapping.html) can be used
+for the ElasticSearch index:
+
+```json
+{
+  "mappings": {
+    "measurement": {
+      "properties": {
+        "deviceId": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 256
+            }
+          }
+        },
+        "humidity": {
+          "type": "float"
+        },
+        "id": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 256
+            }
+          }
+        },
+        "temperatureCelsius": {
+          "type": "float"
+        },
+        "timeStamp": {
+          "type": "date"
+        }
+      }
+    }
+  }
+}
+``` 
