@@ -59,35 +59,33 @@ for the ElasticSearch index:
 ```json
 {
   "mappings": {
-    "measurement": {
-      "properties": {
-        "deviceId": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "keyword",
-              "ignore_above": 256
-            }
+    "properties": {
+      "deviceId": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
           }
-        },
-        "humidity": {
-          "type": "float"
-        },
-        "id": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "keyword",
-              "ignore_above": 256
-            }
-          }
-        },
-        "temperatureCelsius": {
-          "type": "float"
-        },
-        "timeStamp": {
-          "type": "date"
         }
+      },
+      "humidity": {
+        "type": "float"
+      },
+      "id": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "temperatureCelsius": {
+        "type": "float"
+      },
+      "timeStamp": {
+        "type": "date"
       }
     }
   }
