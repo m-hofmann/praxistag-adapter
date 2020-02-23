@@ -31,7 +31,7 @@ namespace adapter
         public void Write(Measurement measurement)
         {
             // TODO upload the measurement into the index
-            IIndexResponse response = client.IndexDocument(measurement);
+            var response = client.IndexDocument(measurement);
 
             if (!response.IsValid)
             {
