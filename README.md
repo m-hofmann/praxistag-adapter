@@ -1,6 +1,8 @@
 # GCloud PubSub &leftrightarrow; ES Adapter
 
-Simple .NET Core adapter to pull IoT measurements from Google Cloud's PubSub and send them to an ElasticSearch instance.
+_Training exercise template_ for our student publicity event. 
+
+A Simple .NET Core adapter to pull IoT measurements from Google Cloud's PubSub and send them to an ElasticSearch instance.
 
 Provide a valid config (see below) and a GCloud credentials file and run the program 
 
